@@ -12,6 +12,7 @@
   "dependencies": {
     "discord.js": "^11.3.2",
     "ffmpeg-binaries": "^3.2.2-3",
+    "lodash": "^4.17.5",
     "node-opus": "^0.2.7",
     "ytdl-core": "^0.20.2"
   }
