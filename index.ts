@@ -68,7 +68,7 @@ const COMMANDS = {
 BOT.on('message', (message) => {
 
     // Check if message sender is bot or not
-    if(message.author.bot == true){
+    if (message.author.bot == true) {
         return true;
     }
 
@@ -76,8 +76,8 @@ BOT.on('message', (message) => {
     let command = _.split(message.content, " ")[0]
 
     // If command exists go
-    if (Commands.hasOwnProperty(command)) {
-        Commands[command](message)
+    if (COMMANDS.hasOwnProperty(command)) {
+        COMMANDS[command].action(message)
     }
 })
 
@@ -88,18 +88,30 @@ process.on('SIGINT', () => {
 })
 
 
+function showHelp(message) {
+    let text = ''
+    for (let command in COMMANDS) {
+        console.log(command)
+        let commandHelp: string
+        commandHelp = '**' + command + '** : ' + COMMANDS[command].description + '\n'
+        console.log(commandHelp)
+        text += commandHelp
+    }
+    console.log(text)
+    message.channel.send(text)
+}
+
 function playSound() {
     // Log
     let url = AudioQueue[AudioQueueIndex]
     console.log("Sound to play : " + url)
 
-    if (url){
-        console.log("Connection:", Connection)
+    if (url) {
         StreamDispatcher = Connection.playStream(ytdl(
             url, { filter: 'audioonly' }
         ), { volume: 0.1 })
     } else {
-        console.log("No sound to play!"
+        console.log("No sound to play!")
         return
     }
 }
@@ -121,7 +133,7 @@ function nextSound(message) {
     StreamDispatcher.end()
 
     // Go to next sound
-    if(AudioQueueIndex < AudioQueue.length - 1){
+    if (AudioQueueIndex < AudioQueue.length - 1) {
         AudioQueueIndex = AudioQueueIndex + 1
     }
 
@@ -153,7 +165,7 @@ function addSoundToQueue(message) {
         // Add sound to queue
         AudioQueue.push(url)
     }
-    else{
+    else {
         // If error
         message.channel.sendMessage('Bad link u bad :/')
     }
@@ -200,7 +212,6 @@ function leaveChannel(message?) {
 
     // Get channel
     let channel = BOT.voiceConnections.first().channel
-    console.log(BOT.voiceConnections.first().channel)
 
 
     // Log
@@ -208,7 +219,7 @@ function leaveChannel(message?) {
 
     // Be sure that channels exist
     if (channel) {
-        
+
         // Leave channel and turn off connection
         channel.leave()
         Connection = null
