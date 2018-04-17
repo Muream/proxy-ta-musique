@@ -1,5 +1,6 @@
 import * as Discord from "discord.js"
 import * as ytdl from "ytdl-core"
+import * as youtubeSearch from "youtube-search"
 import * as _ from "lodash"
 import * as fs from 'fs'
 const BOT = new Discord.Client();
@@ -73,7 +74,7 @@ BOT.on('message', (message) => {
 
     // Check if message sender is bot or not
     if (message.author.bot == true) {
-        return true;
+        return true
     }
 
     // Get command (first word of string)
@@ -105,34 +106,35 @@ function showHelp(message) {
     message.channel.send(text)
 }
 
-function playSound() {
+function playTrack() {
     // Log
     let url = AudioQueue[AudioQueueIndex]
-    console.log("Sound to play : " + url)
+    console.log("Track to play : " + url)
 
     if (url) {
-        StreamDispatcher = Connection.playStream(ytdl(
-            url, { filter: 'audioonly' }
-        ), { volume: 0.1 })
+        StreamDispatcher = Connection.playStream(
+            ytdl(url, { filter: 'audioonly' }),
+            { volume: 0.1 }
+        )
     } else {
         console.log("No sound to play!")
         return
     }
 }
 
-function stopSound(message) {
+function stopTrack(message) {
     StreamDispatcher.end()
 }
 
-function pauseSound(message) {
+function pauseTrack(message) {
     StreamDispatcher.pause()
 }
 
-function resumeSound(message) {
+function resumeTrack(message) {
     StreamDispatcher.resume()
 }
 
-function nextSound(message) {
+function nextTrack(message) {
     // Stop current streaming
     StreamDispatcher.end()
 
@@ -142,11 +144,11 @@ function nextSound(message) {
     }
 
     // Play sound
-    playSound()
+    playTrack()
 
 }
 
-function previousSound(message) {
+function previousTrack(message) {
     // Stop current streaming
     StreamDispatcher.end()
 
@@ -156,11 +158,11 @@ function previousSound(message) {
     }
 
     // Play sound
-    playSound()
+    playTrack()
 
 }
 
-function addSoundToQueue(message) {
+function addTrackToQueue(message) {
     let url = getYoutubeURL(message.content)
     console.log("Ask to add sound : " + url)
 
@@ -196,6 +198,27 @@ function getYoutubeURL(message) {
         console.log(urlToCheck + " doesnt match url regex !")
         return "error"
     }
+}
+
+function searchYoutube(message){
+    // remove the command from the message
+    let stringToSearch = _.join(_.split(message.content, " ").slice(1), " ")
+
+
+    // youtube options
+    let opts: youtubeSearch.YouTubeSearchOptions = {
+        maxResults: 1,
+        type: 'video',
+        key: MANIFEST.youtube
+    }
+
+    console.log("Searching:", stringToSearch)
+    youtubeSearch(stringToSearch, opts).then(
+        (result) => {
+            let url = result[0].link
+            AudioQueue.push(url)
+        } 
+    )
 }
 
 function joinChannel(message) {
