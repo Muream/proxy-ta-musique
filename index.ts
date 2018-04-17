@@ -14,53 +14,57 @@ var AudioQueueIndex = 0
 
 // List of available commands
 const COMMANDS = {
-    ':help': {
+    '$help': {
         action: message => showHelp(message),
         description: "List of all possible commands."
     },
-    ':ping': {
+    '$ping': {
         action: message => message.channel.send('pong'),
         description: "Pong!"
     },
-    ':pong': {
+    '$pong': {
         action: message => message.channel.send('ping'),
         description: "Ping!"
     },
-    ':join': {
+    '$join': {
         action: message => joinChannel(message),
         description: "Join the user's voice channel."
     },
-    ':leave': {
+    '$leave': {
         action: message => leaveChannel(message),
         description: "Leave the current voice channel."
     },
-    ':play': {
-        action: message => playSound(),
+    '$play': {
+        action: message => playTrack(),
         description: "Start playing audio."
     },
-    ':stop': {
-        action: message => stopSound(message),
+    '$stop': {
+        action: message => stopTrack(message),
         description: "Stop playing audio."
     },
-    ':pause': {
-        action: message => pauseSound(message),
+    '$pause': {
+        action: message => pauseTrack(message),
         description: "Pause the current audio track."
     },
-    ':resume': {
-        action: message => resumeSound(message),
+    '$resume': {
+        action: message => resumeTrack(message),
         description: "Resume the current audio track."
     },
-    ':add': {
-        action: message => addSoundToQueue(message),
+    '$add': {
+        action: message => addTrackToQueue(message),
         description: "Add an audio track from youtube at the end of the playlist."
     },
-    ':next': {
-        action: message => nextSound(message),
+    '$next': {
+        action: message => nextTrack(message),
         description: "Skip to the next audio track."
     },
-    ':previous': {
-        action: message => previousSound(message),
+    '$previous': {
+        action: message => previousTrack(message),
         description: "Skip to the previous audio track."
+    },
+    '$search': {
+        action: message => searchYoutube(message),
+        description: "Search youtube"
     },
 }
 
