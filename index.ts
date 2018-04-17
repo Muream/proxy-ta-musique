@@ -14,7 +14,7 @@ var AudioQueueIndex = 0
 const Commands = {
     'ping': message => message.channel.sendMessage('pong'),
     'pong': message => message.channel.sendMessage('ping'),
-    'join': message => joinChannelFromCommand(message),
+    'join': message => joinChannel(message),
     'leave': message => leaveChannel(message),
     'play': message => playSound(),
     'stop': message => stopSound(message),
@@ -134,16 +134,15 @@ function getYoutubeURL(message) {
     }
 }
 
-async function joinChannelFromCommand(message) {
+function joinChannel(message) {
 
     // Get channel
     let channel = message.member.voiceChannel
 
-    // Log
-    console.log("Ask to join channel : ", channel.name)
-
     if (channel) {
-        Connection = await channel.join()
+        // Log
+        console.log("Ask to join channel : ", channel.name)
+        channel.join().then(conn => Connection = conn)
     } else {
         message.channel.sendMessage('You need to join a voice channel first.')
     }
