@@ -173,7 +173,7 @@ function addTrackToQueue(message) {
     }
     else {
         // If error
-        message.channel.sendMessage('Bad link u bad :/')
+        message.channel.send('Bad link u bad :/')
     }
 }
 
@@ -216,6 +216,7 @@ function searchYoutube(message){
     youtubeSearch(stringToSearch, opts).then(
         (result) => {
             let url = result[0].link
+            message.channel.send('New file in audio queue :' + result[0].title)
             AudioQueue.push(url)
         } 
     )
@@ -231,7 +232,7 @@ function joinChannel(message) {
         console.log("Ask to join channel : ", channel.name)
         channel.join().then(conn => Connection = conn)
     } else {
-        message.channel.sendMessage('You need to join a voice channel first.')
+        message.channel.send('You need to join a voice channel first.')
     }
 }
 
@@ -255,7 +256,7 @@ function leaveChannel(message?) {
 
         // If channel doesnt exist, err msg
         if (message) {
-            message.channel.sendMessage('I cannot leave')
+            message.channel.send('I cannot leave')
         }
 
     }
