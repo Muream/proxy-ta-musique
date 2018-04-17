@@ -96,13 +96,10 @@ process.on('SIGINT', () => {
 function showHelp(message) {
     let text = ''
     for (let command in COMMANDS) {
-        console.log(command)
         let commandHelp: string
         commandHelp = '**' + command + '** : ' + COMMANDS[command].description + '\n'
-        console.log(commandHelp)
         text += commandHelp
     }
-    console.log(text)
     message.channel.send(text)
 }
 
@@ -124,14 +121,17 @@ function playTrack() {
 
 function stopTrack(message) {
     StreamDispatcher.end()
+    console.log("Stopped playing.")
 }
 
 function pauseTrack(message) {
     StreamDispatcher.pause()
+    console.log("Paused playing.")
 }
 
 function resumeTrack(message) {
     StreamDispatcher.resume()
+    console.log("Resumed playing.")
 }
 
 function nextTrack(message) {
@@ -145,7 +145,6 @@ function nextTrack(message) {
 
     // Play sound
     playTrack()
-
 }
 
 function previousTrack(message) {
@@ -200,25 +199,39 @@ function getYoutubeURL(message) {
     }
 }
 
-function searchYoutube(message){
+function searchYoutube(message) {
     // remove the command from the message
     let stringToSearch = _.join(_.split(message.content, " ").slice(1), " ")
-
 
     // youtube options
     let opts: youtubeSearch.YouTubeSearchOptions = {
         maxResults: 1,
         type: 'video',
+        regionCode: 'FR',
         key: MANIFEST.youtube
     }
 
-    console.log("Searching:", stringToSearch)
+    console.log("Searching string:", stringToSearch)
     youtubeSearch(stringToSearch, opts).then(
         (result) => {
-            let url = result[0].link
-            message.channel.send('New file in audio queue :' + result[0].title)
+            let res = result[0]
+            let url = res.link
+            let title = res.title
+            console.log("Found \"" + title + "\" at " + url)
             AudioQueue.push(url)
-        } 
+
+            // Feedback
+            let embedMsg = new Discord.RichEmbed({
+                url: url,
+                thumbnail: { url: res.thumbnails.default.url }
+                title: title,
+                footer: {
+                    text: "Added by " + message.author.username,
+                    icon_url: message.author.avatarURL,
+                },
+            })
+            message.channel.send("**" + title + "** was added to the playlist", embedMsg)
+        }
     )
 }
 
@@ -230,7 +243,10 @@ function joinChannel(message) {
     if (channel) {
         // Log
         console.log("Ask to join channel : ", channel.name)
-        channel.join().then(conn => Connection = conn)
+        channel.join().then(conn => {
+         Connection = conn   
+            message.channel.send("Joined " + channel.name + "!")
+        })
     } else {
         message.channel.send('You need to join a voice channel first.')
     }
