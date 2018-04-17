@@ -5,6 +5,8 @@ import * as fs from 'fs'
 const BOT = new Discord.Client();
 const MANIFEST = JSON.parse(fs.readFileSync('./manifest.json', 'utf8'))
 
+BOT.login(MANIFEST.bot)
+
 var Connection = null
 var StreamDispatcher = null
 var AudioQueue = []
@@ -42,18 +44,27 @@ BOT.on('message', (message) => {
     }
 })
 
+// disconnect the bot when killing the process
+process.on('SIGINT', () => {
+    leaveChannel()
+    process.exit()
+})
 
-BOT.login(MANIFEST.bot)
 
-
-async function playSound() {
+function playSound() {
     // Log
     let url = AudioQueue[AudioQueueIndex]
     console.log("Sound to play : " + url)
 
-    StreamDispatcher = Connection.playStream(ytdl(
-        url, { filter: 'audioonly' }
-    ), { volume: 0.1 })
+    if (url){
+        console.log("Connection:", Connection)
+        StreamDispatcher = Connection.playStream(ytdl(
+            url, { filter: 'audioonly' }
+        ), { volume: 0.1 })
+    } else {
+        console.log("No sound to play!"
+        return
+    }
 }
 
 function stopSound(message) {
@@ -148,10 +159,12 @@ function joinChannel(message) {
     }
 }
 
-function leaveChannel(message) {
+function leaveChannel(message?) {
 
     // Get channel
-    let channel = message.member.voiceChannel
+    let channel = BOT.voiceConnections.first().channel
+    console.log(BOT.voiceConnections.first().channel)
+
 
     // Log
     console.log("Ask to Leave channel : ", channel.name)
@@ -166,7 +179,9 @@ function leaveChannel(message) {
     } else {
 
         // If channel doesnt exist, err msg
-        message.channel.sendMessage('I cannot leave')
+        if (message) {
+            message.channel.sendMessage('I cannot leave')
+        }
 
     }
 }
