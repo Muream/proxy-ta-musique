@@ -22,6 +22,7 @@ const Commands = {
     'resume': message => resumeSound(message),
     'add': message => addSoundToQueue(message),
     'next': message => nextSound(message),
+    'previous': message => previousSound(message),
 }
 
 // Listen messages
@@ -68,7 +69,7 @@ function resumeSound(message) {
 }
 
 function nextSound(message) {
-    // Stop actual streaming
+    // Stop current streaming
     StreamDispatcher.end()
 
     // Go to next sound
@@ -81,12 +82,26 @@ function nextSound(message) {
 
 }
 
+function previousSound(message) {
+    // Stop current streaming
+    StreamDispatcher.end()
+
+    // Go to previous sound
+    if (AudioQueueIndex > 0) {
+        AudioQueueIndex = AudioQueueIndex - 1
+    }
+
+    // Play sound
+    playSound()
+
+}
+
 function addSoundToQueue(message) {
     let url = getYoutubeURL(message.content)
     console.log("Ask to add sound : " + url)
 
     // Check if url ok
-    if (!url.includes("error")){
+    if (!url.includes("error")) {
         // Add sound to queue
         AudioQueue.push(url)
     }
