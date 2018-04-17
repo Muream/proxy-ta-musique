@@ -1,7 +1,9 @@
-import * as Discord from "discord.js";
-import * as ytdl from "ytdl-core";
-import * as _ from "lodash";
-const bot = new Discord.Client();
+import * as Discord from "discord.js"
+import * as ytdl from "ytdl-core"
+import * as _ from "lodash"
+import * as fs from 'fs'
+const BOT = new Discord.Client();
+const MANIFEST = JSON.parse(fs.readFileSync('./manifest.json', 'utf8'))
 
 var Connection = null
 var StreamDispatcher = null
@@ -23,7 +25,7 @@ const Commands = {
 }
 
 // Listen messages
-bot.on('message', (message) => {
+BOT.on('message', (message) => {
 
     // Check if message sender is bot or not
     if(message.author.bot == true){
@@ -40,7 +42,7 @@ bot.on('message', (message) => {
 })
 
 
-bot.login('NDM1NDAzMjE1NTAxMDAwNzA0.DbYfdQ.TiIFD_n-y2VqJds4PUe2Fd-80-g')
+BOT.login(MANIFEST.bot)
 
 
 async function playSound() {

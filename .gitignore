@@ -62,3 +62,5 @@ typings/
 
 # javascript files
 *.js
+
+manifest.json
