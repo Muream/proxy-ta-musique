@@ -13,18 +13,55 @@ var AudioQueue = []
 var AudioQueueIndex = 0
 
 // List of available commands
-const Commands = {
-    'ping': message => message.channel.sendMessage('pong'),
-    'pong': message => message.channel.sendMessage('ping'),
-    'join': message => joinChannel(message),
-    'leave': message => leaveChannel(message),
-    'play': message => playSound(),
-    'stop': message => stopSound(message),
-    'pause': message => pauseSound(message),
-    'resume': message => resumeSound(message),
-    'add': message => addSoundToQueue(message),
-    'next': message => nextSound(message),
-    'previous': message => previousSound(message),
+const COMMANDS = {
+    ':help': {
+        action: message => showHelp(message),
+        description: "List of all possible commands."
+    },
+    ':ping': {
+        action: message => message.channel.send('pong'),
+        description: "Pong!"
+    },
+    ':pong': {
+        action: message => message.channel.send('ping'),
+        description: "Ping!"
+    },
+    ':join': {
+        action: message => joinChannel(message),
+        description: "Join the user's voice channel."
+    },
+    ':leave': {
+        action: message => leaveChannel(message),
+        description: "Leave the current voice channel."
+    },
+    ':play': {
+        action: message => playSound(),
+        description: "Start playing audio."
+    },
+    ':stop': {
+        action: message => stopSound(message),
+        description: "Stop playing audio."
+    },
+    ':pause': {
+        action: message => pauseSound(message),
+        description: "Pause the current audio track."
+    },
+    ':resume': {
+        action: message => resumeSound(message),
+        description: "Resume the current audio track."
+    },
+    ':add': {
+        action: message => addSoundToQueue(message),
+        description: "Add an audio track from youtube at the end of the playlist."
+    },
+    ':next': {
+        action: message => nextSound(message),
+        description: "Skip to the next audio track."
+    },
+    ':previous': {
+        action: message => previousSound(message),
+        description: "Skip to the previous audio track."
+    },
 }
 
 // Listen messages
